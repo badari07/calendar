@@ -4,6 +4,8 @@ import HomePage from "./HomePage";
 import { createBrowserHistory as createHistory } from "history";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import Search from "./search";
+
 import "./App.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,8 +21,10 @@ function App({ calendarStore }) {
             <Nav className="mr-auto">
               <Nav.Link href="/">Home</Nav.Link>
             </Nav>
+            <Search />
           </Navbar.Collapse>
         </Navbar>
+
         <Route
           path="/"
           exact
