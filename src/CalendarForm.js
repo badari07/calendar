@@ -14,29 +14,32 @@ const buttonStyle = { marginRight: 10 };
 function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
   const [start, setStart] = React.useState(null);
   const [end, setEnd] = React.useState(null);
-  const [title, setTitle] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [description, setDescription] = React.useState("");
   const [id, setId] = React.useState(null);
   React.useEffect(() => {
-    setTitle(calendarEvent.title);
+    setName(calendarEvent.name);
     setStart(calendarEvent.start);
     setEnd(calendarEvent.end);
     setId(calendarEvent.id);
+    setDescription(calendarEvent.description);
   }, [
-    calendarEvent.title,
+    calendarEvent.name,
     calendarEvent.start,
     calendarEvent.end,
     calendarEvent.id,
+    calendarEvent.description,
   ]);
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    if (!title || !start || !end) {
+    if (!name || !start || !end) {
       return;
     }
     if (+start > +end) {
       alert("Start date must be earlier than end date");
       return;
     }
-    const data = { id, title, start, end };
+    const data = { id, name, start, end, description };
     if (!edit) {
       await addCalendar(data);
     } else {
@@ -55,7 +58,8 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
   };
   const handleStartChange = (date) => setStart(date);
   const handleEndChange = (date) => setEnd(date);
-  const handleTitleChange = (ev) => setTitle(ev.target.value);
+  const handleNameChange = (ev) => setName(ev.target.value);
+  const handleDescriptionChange = (e) => setDescription(e.target.value);
   const deleteCalendarEvent = async () => {
     await deleteCalendar(calendarEvent.id);
     const response = await getCalendar();
@@ -72,17 +76,33 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
   return (
     <Form noValidate onSubmit={handleSubmit}>
       <Form.Row>
-        <Form.Group as={Col} md="12" controlId="title">
-          <Form.Label>Title</Form.Label>
+        <Form.Group as={Col} md="12" controlId="name">
+          <Form.Label>Name</Form.Label>
           <Form.Control
             type="text"
-            name="title"
-            placeholder="Title"
-            value={title || ""}
-            onChange={handleTitleChange}
-            isInvalid={!title}
+            name="name"
+            placeholder="Name"
+            value={name || ""}
+            onChange={handleNameChange}
+            isInvalid={!name}
           />
-          <Form.Control.Feedback type="invalid">{!title}</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{!name}</Form.Control.Feedback>
+        </Form.Group>
+      </Form.Row>
+      <Form.Row>
+        <Form.Group as={Col} md="12" controlId="description">
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={description || ""}
+            onChange={handleDescriptionChange}
+            isInvalid={!description}
+          />
+          <Form.Control.Feedback type="invalid">
+            {!description}
+          </Form.Control.Feedback>
         </Form.Group>
       </Form.Row>
       <Form.Row>

@@ -29,7 +29,7 @@ function HomePage({ calendarStore }) {
   };
   const handleSelect = (event, e) => {
     const { start, end } = event;
-    const data = { title: "", start, end, allDay: false };
+    const data = { name: "", description: "", start, end, allDay: false };
     setShowAddModal(true);
     setShowEditModal(false);
     setCalendarEvent(data);
@@ -37,10 +37,10 @@ function HomePage({ calendarStore }) {
   const handleSelectEvent = (event, e) => {
     setShowAddModal(false);
     setShowEditModal(true);
-    let { id, title, start, end, allDay } = event;
+    let { id, name, description, start, end, allDay } = event;
     start = new Date(start);
     end = new Date(end);
-    const data = { id, title, start, end, allDay };
+    const data = { id, name, description, start, end, allDay };
     setCalendarEvent(data);
   };
   React.useEffect(() => {
