@@ -14,32 +14,38 @@ const buttonStyle = { marginRight: 10 };
 function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
   const [start, setStart] = React.useState(null);
   const [end, setEnd] = React.useState(null);
-  const [name, setName] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [ckecked, setChecked] = React.useState(false);
+  const [before, setBefore] = React.useState(null);
   const [description, setDescription] = React.useState("");
   const [id, setId] = React.useState(null);
   React.useEffect(() => {
-    setName(calendarEvent.name);
+    setTitle(calendarEvent.title);
     setStart(calendarEvent.start);
     setEnd(calendarEvent.end);
     setId(calendarEvent.id);
     setDescription(calendarEvent.description);
+    setChecked(calendarEvent.ckecked);
+    setBefore(calendarEvent.before);
   }, [
-    calendarEvent.name,
+    calendarEvent.title,
     calendarEvent.start,
     calendarEvent.end,
     calendarEvent.id,
     calendarEvent.description,
+    calendarEvent.ckecked,
+    calendarEvent.before,
   ]);
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    if (!name || !start || !end) {
+    if (!title || !start || !end) {
       return;
     }
     if (+start > +end) {
       alert("Start date must be earlier than end date");
       return;
     }
-    const data = { id, name, start, end, description };
+    const data = { id, title, start, end, description, ckecked, before };
     if (!edit) {
       await addCalendar(data);
     } else {
@@ -51,6 +57,7 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
         ...d,
         start: new Date(d.start),
         end: new Date(d.end),
+        before: new Date(d.start),
       };
     });
     calendarStore.setCalendarEvents(evs);
@@ -58,7 +65,8 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
   };
   const handleStartChange = (date) => setStart(date);
   const handleEndChange = (date) => setEnd(date);
-  const handleNameChange = (ev) => setName(ev.target.value);
+  const handleBeforeChange = (date) => setBefore(date);
+  const handleTitleChange = (ev) => setTitle(ev.target.value);
   const handleDescriptionChange = (e) => setDescription(e.target.value);
   const deleteCalendarEvent = async () => {
     await deleteCalendar(calendarEvent.id);
@@ -68,25 +76,122 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
         ...d,
         start: new Date(d.start),
         end: new Date(d.end),
+        before: new Date(d.before),
       };
     });
     calendarStore.setCalendarEvents(evs);
     onCancel();
   };
+
+  const handleckeckedChange = (e) => setChecked(e.target.checked);
+  if (ckecked) {
+    return (
+      <Form noValidate onSubmit={handleSubmit}>
+        <Form.Row>
+          <Form.Group as={Col} md="12" controlId="title">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={title || ""}
+              onChange={handleTitleChange}
+              isInvalid={!title}
+            />
+            <Form.Control.Feedback type="invalid">
+              {!title}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} md="12" controlId="description">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              type="text"
+              name="description"
+              placeholder="Description"
+              value={description || ""}
+              onChange={handleDescriptionChange}
+              isInvalid={!description}
+            />
+            <Form.Control.Feedback type="invalid">
+              {!description}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} md="12" controlId="start">
+            <Form.Label>Start</Form.Label>
+            <br />
+            <DatePicker
+              showTimeSelect
+              className="form-control"
+              selected={start}
+              onChange={handleStartChange}
+            />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} md="12" controlId="end">
+            <Form.Label>End</Form.Label>
+            <br />
+            <DatePicker
+              showTimeSelect
+              className="form-control"
+              selected={end}
+              onChange={handleEndChange}
+            />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group controlId="ckecked">
+            <Form.Check
+              type="checkbox"
+              label="Remind ME"
+              value={ckecked}
+              onChange={handleckeckedChange}
+            />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} md="12" controlId="before">
+            <Form.Label>Remind Before</Form.Label>
+            <br />
+            <DatePicker
+              showTimeSelect
+              className="form-control"
+              selected={before}
+              onChange={handleBeforeChange}
+            />
+          </Form.Group>
+        </Form.Row>
+        <Button type="submit" style={buttonStyle}>
+          Save
+        </Button>
+        <Button type="button" style={buttonStyle} onClick={deleteCalendarEvent}>
+          Delete
+        </Button>
+        <Button type="button" onClick={onCancel}>
+          Cancel
+        </Button>
+      </Form>
+    );
+  }
+
   return (
     <Form noValidate onSubmit={handleSubmit}>
       <Form.Row>
-        <Form.Group as={Col} md="12" controlId="name">
-          <Form.Label>Name</Form.Label>
+        <Form.Group as={Col} md="12" controlId="title">
+          <Form.Label>Title</Form.Label>
           <Form.Control
             type="text"
-            name="name"
-            placeholder="Name"
-            value={name || ""}
-            onChange={handleNameChange}
-            isInvalid={!name}
+            name="title"
+            placeholder="Title"
+            value={title || ""}
+            onChange={handleTitleChange}
+            isInvalid={!title}
           />
-          <Form.Control.Feedback type="invalid">{!name}</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{!title}</Form.Control.Feedback>
         </Form.Group>
       </Form.Row>
       <Form.Row>
@@ -126,6 +231,16 @@ function CalendarForm({ calendarStore, calendarEvent, onCancel, edit }) {
             className="form-control"
             selected={end}
             onChange={handleEndChange}
+          />
+        </Form.Group>
+      </Form.Row>
+      <Form.Row>
+        <Form.Group controlId="ckecked">
+          <Form.Check
+            type="checkbox"
+            label="Remind ME"
+            value={ckecked}
+            onChange={handleckeckedChange}
           />
         </Form.Group>
       </Form.Row>

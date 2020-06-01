@@ -22,14 +22,23 @@ function HomePage({ calendarStore }) {
         ...d,
         start: new Date(d.start),
         end: new Date(d.end),
+        before: new Date(d.before),
       };
     });
     calendarStore.setCalendarEvents(evs);
     setInitialized(true);
   };
   const handleSelect = (event, e) => {
-    const { start, end } = event;
-    const data = { name: "", description: "", start, end, allDay: false };
+    const { start, end, before } = event;
+    const data = {
+      title: "",
+      description: "",
+      start,
+      ckecked: false,
+      end,
+      before,
+      allDay: false,
+    };
     setShowAddModal(true);
     setShowEditModal(false);
     setCalendarEvent(data);
@@ -37,10 +46,20 @@ function HomePage({ calendarStore }) {
   const handleSelectEvent = (event, e) => {
     setShowAddModal(false);
     setShowEditModal(true);
-    let { id, name, description, start, end, allDay } = event;
+    let { id, title, description, ckecked, start, end, before, allDay } = event;
     start = new Date(start);
     end = new Date(end);
-    const data = { id, name, description, start, end, allDay };
+    before = new Date(before);
+    const data = {
+      id,
+      title,
+      description,
+      ckecked,
+      start,
+      before,
+      end,
+      allDay,
+    };
     setCalendarEvent(data);
   };
   React.useEffect(() => {
