@@ -4,11 +4,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### `npm install`
+### `npm install or yarn`
 
 To get all the dependencies in project.
 
-### Install it by :
+### Install json-server by :
 
 ```bash
 npm i -g json-server
@@ -22,7 +22,7 @@ We will save the data on the back end in a JSON file.
 json-server --watch db.json
 ```
 
-In db.json , replace the existing content with:
+In db.json , If you need to start with no data in calender. replace the existing content with:
 
 ```bash
 {
@@ -30,7 +30,7 @@ In db.json , replace the existing content with:
 }
 ```
 
-### `yarn start`
+### `yarn start or npm run start`
 
 Next we run our app by running npm start in our app’s project folder and when the program asks you to run in a different port, select yes.
 
